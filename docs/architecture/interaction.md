@@ -11,7 +11,7 @@
 - `zoom_at` keeps the graph point under the pointer fixed while zooming.
 - `fit_graph` pads by 36 units and never fits above zoom 1, so it does not enlarge small graphs.
 
-`fit_graph` runs when the canvas bounds change and during layout animation, but only while the user has not moved the camera. Panning, node dragging, and zooming set that flag; `replace_graph` clears it.
+`fit_graph` runs when the canvas bounds change, during layout animation, and on `fit_view`; the first two only while the user has not moved the camera. Panning, node dragging, and zooming set that flag; `replace_graph` clears it, and `fit_view` clears it and fits immediately for a host "fit view" command.
 
 ## Nodes on screen
 
@@ -52,6 +52,7 @@ A node is a corner-radius rounded quad filled with a 135° Oklab gradient. The g
 | `set_graph` | Keeps camera and previous positions, seeds from matching IDs, reheats at 0.35 |
 | `replace_graph` | Resets camera, positions, interaction, and pending work, then relayouts |
 | `set_labels` | Replaces labels and repaints |
+| `fit_view` | Fits the camera to the visible graph and clears the user-moved flag |
 
 Layout and settle use generation counters, so a newer snapshot or settle request discards older work. A pending snapshot keeps the previous scene on screen until it is ready and cannot be discarded by a node drag. With reduced motion enabled, finished layouts apply without interpolation or the frame settle loop.
 

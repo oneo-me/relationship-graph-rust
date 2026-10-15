@@ -24,7 +24,8 @@
 //! The viewport uses the `RelationshipGraph` key context.
 //!
 //! `set_graph` retains the camera and seeds layout from matching IDs. `replace_graph` resets
-//! the camera and transient state for a different dataset. New snapshots cancel stale work;
+//! the camera and transient state for a different dataset. `fit_view` fits the camera to the
+//! visible graph for a host "fit view" command. New snapshots cancel stale work;
 //! a pending snapshot keeps the previous scene until ready and cannot be discarded by a node drag.
 //! Layout runs in the background, with frame-driven settling after drag release. With GPUI
 //! reduced motion enabled, final layouts are applied without transition or frame-driven settling.

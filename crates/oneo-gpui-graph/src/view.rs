@@ -133,6 +133,18 @@ impl GraphView {
         cx.notify();
     }
 
+    /// Fits the camera to the visible graph and lets later automatic fits apply.
+    ///
+    /// Use this for a host "fit view" command. It does not move nodes: the
+    /// layout keeps its positions and only the camera changes. Clearing the
+    /// user-moved flag means the next layout animation or canvas resize fits
+    /// again until the user pans, zooms, or drags a node.
+    pub fn fit_view(&mut self, cx: &mut Context<Self>) {
+        self.user_moved_camera = false;
+        self.fit_graph();
+        cx.notify();
+    }
+
     fn schedule_layout(&mut self, cx: &mut Context<Self>) {
         let alpha = if self.positions.is_empty() { 1.0 } else { 0.35 };
         self.schedule_layout_with_alpha(alpha, cx);
@@ -894,6 +906,38 @@ mod tests {
         cx.run_until_parked();
         view.read_with(cx, |view, _| {
             assert_eq!(view.visible_graph.nodes[0].id, "replacement")
+        });
+    }
+
+    #[gpui_kit::test]
+    fn fit_view_recenters_the_camera_and_clears_the_user_moved_flag(
+        cx: &mut gpui_kit::TestAppContext,
+    ) {
+        cx.update(|cx| {
+            gpui_kit::init(cx);
+            cx.set_reduce_motion(true);
+        });
+        let data = GraphData::new(
+            vec![
+                crate::GraphNode::new("a", "A"),
+                crate::GraphNode::new("b", "B"),
+            ],
+            vec![crate::GraphEdge::new("a", "b")],
+        )
+        .unwrap();
+        let view = cx.new(|cx| GraphView::new(data, GraphLabels::default(), cx));
+        let (_, cx) = cx
+            .add_window_view(|window, cx| gpui_kit::component::Root::new(view.clone(), window, cx));
+        cx.run_until_parked();
+        cx.update(|window, cx| window.draw(cx).clear(cx));
+        view.update(cx, |view, cx| {
+            view.camera.x = 500.0;
+            view.camera.zoom = 4.0;
+            view.user_moved_camera = true;
+            view.fit_view(cx);
+            assert!(!view.user_moved_camera);
+            assert!(view.camera.zoom <= 1.0);
+            assert_ne!(view.camera.x, 500.0);
         });
     }
 }
