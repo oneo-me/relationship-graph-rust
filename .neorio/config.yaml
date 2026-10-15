@@ -1,0 +1,15 @@
+tasks:
+  - label: Run
+    group: run
+    command: cargo
+    args: [run, -p, oneo-gpui-graph, --example, relationships]
+  - label: Build
+    group: build
+    command: cargo
+    args: [build, -p, oneo-gpui-graph, --release]
+  - label: Test
+    command: cargo
+    args: [test, -p, oneo-gpui-graph]
+  - label: Clippy
+    command: cargo
+    args: [clippy, -p, oneo-gpui-graph, --all-targets]

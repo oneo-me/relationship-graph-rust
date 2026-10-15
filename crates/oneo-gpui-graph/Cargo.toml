@@ -1,0 +1,15 @@
+[package]
+name = "oneo-gpui-graph"
+description = "A GPUI Kit relationship graph component with force layout, pan, zoom, node dragging, and activation events."
+license.workspace = true
+version.workspace = true
+edition.workspace = true
+repository = "https://github.com/oneo-me/relationship-graph-rust"
+keywords = ["gpui", "graph", "relationship", "visualization", "component"]
+categories = ["gui", "visualization"]
+
+[dependencies]
+gpui-kit.workspace = true
+
+[dev-dependencies]
+gpui-kit = { workspace = true, features = ["test-support"] }
